@@ -1,208 +1,294 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Captura Cliente CCTV</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      max-width: 500px; margin: 50px auto;
-      padding: 30px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white; min-height: 100vh;
-    }
-    .container {
-      background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-      border-radius: 20px; padding: 40px 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    }
-    h1 { 
-      text-align: center; margin-bottom: 30px; 
-      font-size: 28px; font-weight: 700; 
-      background: linear-gradient(45deg, #fff, rgba(255,255,255,0.8));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .form-group { margin-bottom: 25px; }
-    label { 
-      display: block; margin-bottom: 8px; 
-      font-weight: 600; font-size: 16px;
-    }
-    input {
-      width: 100%; padding: 18px 20px; 
-      border: none; border-radius: 15px;
-      font-size: 18px; background: rgba(255,255,255,0.95);
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-    }
-    input:focus {
-      outline: none; background: white;
-      box-shadow: 0 0 0 3px rgba(255,255,255,0.5);
-      transform: translateY(-2px);
-    }
-    button {
-      width: 100%; padding: 20px; 
-      background: linear-gradient(45deg, #25D366, #128C7E);
-      color: white; border: none; border-radius: 15px;
-      font-size: 20px; font-weight: 700; cursor: pointer;
-      box-shadow: 0 10px 30px rgba(37,211,102,0.4);
-      transition: all 0.3s ease;
-    }
-    button:hover:not(:disabled) { 
-      transform: translateY(-3px); 
-      box-shadow: 0 15px 40px rgba(37,211,102,0.6);
-    }
-    button:disabled { 
-      background: #ccc; cursor: not-allowed; 
-      transform: none; box-shadow: none;
-    }
-    #mensaje {
-      margin-top: 20px; padding: 20px; 
-      border-radius: 15px; text-align: center;
-      font-weight: 600; font-size: 16px;
-      display: none; backdrop-filter: blur(10px);
-    }
-    #mensaje.success { 
-      background: rgba(0,255,0,0.2); 
-      border: 2px solid rgba(0,255,0,0.4);
-    }
-    #mensaje.error { 
-      background: rgba(255,0,0,0.2); 
-      border: 2px solid rgba(255,0,0,0.4);
-    }
-    .link-panel {
-      margin-top: 30px; text-align: center;
-    }
-    .link-panel a {
-      color: rgba(255,255,255,0.9); text-decoration: none;
-      font-size: 14px; padding: 10px 20px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 25px; transition: all 0.3s;
-    }
-    .link-panel a:hover {
-      background: rgba(255,255,255,0.2); 
-      border-color: rgba(255,255,255,0.6);
-    }
-    @media (max-width: 480px) {
-      body { margin: 20px auto; padding: 20px 15px; }
-      .container { padding: 30px 20px; }
-      h1 { font-size: 24px; }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>👤 Captura Cliente CCTV</h1>
-    
-    <form id="clienteForm">
-      <div class="form-group">
-        <label>Nombre completo:</label>
-        <input type="text" id="nombre" required 
-               placeholder="Ej: Juan Pérez">
-      </div>
-      
-      <div class="form-group">
-        <label>Teléfono:</label>
-        <input type="tel" id="telefono" required 
-               placeholder="Ej: +1234567890">
-      </div>
-      
-      <button type="submit" id="btnEnviar">
-        📤 Guardar Contacto
-      </button>
-    </form>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel Contactos CCTV</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      h1 {
+        background: linear-gradient(135deg, #25d366, #128c7e);
+        color: white;
+        text-align: center;
+        padding: 30px;
+        margin: 0;
+        font-size: 28px;
+      }
+      .stats {
+        display: flex;
+        gap: 20px;
+        padding: 25px;
+        background: #f8f9fa;
+      }
+      .stat {
+        flex: 1;
+        text-align: center;
+        padding: 20px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .stat-num {
+        font-size: 36px;
+        font-weight: bold;
+        color: #333;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+      }
+      th {
+        background: #333;
+        color: white;
+        padding: 18px 15px;
+        text-align: left;
+      }
+      td {
+        padding: 18px 15px;
+        border-bottom: 1px solid #eee;
+      }
+      tr:hover {
+        background: #f8f9fa;
+      }
+      .btn-wsp {
+        background: #25d366;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+      }
+      .btn-wsp:hover {
+        background: #128c7e;
+        transform: scale(1.05);
+      }
+      .status {
+        padding: 20px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        background: #e8f5e8;
+        color: #155724;
+        border-radius: 10px;
+        margin: 20px;
+      }
+      .status.error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .empty {
+        color: #999;
+        font-style: italic;
+        text-align: center;
+        padding: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📱 Panel Contactos CCTV</h1>
 
-    <div id="mensaje"></div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-num" id="total">0</div>
+          <div>Total Contactos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="hoy">0</div>
+          <div>Registrados Hoy</div>
+        </div>
+      </div>
 
-    <div class="link-panel">
-      <a href="resultados.html" target="_blank">
-        📋 Ver Panel de Contactos
-      </a>
+      <div id="status" class="status">🔄 Cargando contactos...</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Fecha</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="datos">
+          <tr>
+            <td colspan="4" class="empty">Cargando...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
 
-  <script>
-    // 🔥 CAMBIA ESTA URL por la de tu Google Apps Script Web App
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzFk1OpuoUG2XFClfROGDAvP7Y1XL8TNTTBeZrASnxm6aBuaIGKxTeBULa5haR0k_mTFA/exec';
-    
-    // Elementos del DOM
-    const form = document.getElementById('clienteForm');
-    const btnEnviar = document.getElementById('btnEnviar');
-    const mensajeDiv = document.getElementById('mensaje');
+    <script>
+      // ← CAMBIA SOLO ESTE SHEET_ID (44 caracteres de tu URL) →
+      const SHEET_ID = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms";
+      const CSV_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
 
-    function mostrarMensaje(texto, tipo = 'success') {
-      mensajeDiv.innerHTML = texto;
-      mensajeDiv.className = tipo;
-      mensajeDiv.style.display = 'block';
-      
-      // Scroll suave al mensaje
-      mensajeDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
-      setTimeout(() => {
-        mensajeDiv.style.display = 'none';
-      }, 4000);
-    }
+      /** PARSEO ROBUSTO CSV - Maneja comas, saltos, encoding */
+      function parseCSV(csvText) {
+        const lines = csvText
+          .split("")
+          .map((line) => line.trim())
+          .filter((line) => line);
+        if (lines.length < 2) return [];
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const nombre = document.getElementById('nombre').value.trim();
-      const telefono = document.getElementById('telefono').value.trim();
-      
-      if (!nombre || !telefono) {
-        mostrarMensaje('Por favor completa todos los campos', 'error');
-        return;
+        const contactos = [];
+
+        // Skip header (primera línea)
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i];
+          if (!line) continue;
+
+          // Parseo robusto: maneja comas en nombres/teléfonos
+          let nombre = "";
+          let telefono = "";
+          let fecha = "";
+
+          // Split por primera coma → nombre
+          const firstComma = line.indexOf(",");
+          if (firstComma !== -1) {
+            nombre = line.substring(0, firstComma).trim();
+
+            // Resto de la línea → teléfono y fecha
+            const resto = line.substring(firstComma + 1).trim();
+            const secondComma = resto.indexOf(",");
+            if (secondComma !== -1) {
+              telefono = resto.substring(0, secondComma).trim();
+              fecha = resto.substring(secondComma + 1).trim();
+            } else {
+              telefono = resto;
+            }
+          } else {
+            nombre = line;
+          }
+
+          // Solo agregar si tiene nombre
+          if (nombre && nombre !== "Nombre" && nombre !== "nombre") {
+            contactos.push({
+              nombre: nombre.replace(/"/g, ""),
+              telefono: telefono.replace(/"/g, ""),
+              fecha: fecha.replace(/"/g, ""),
+            });
+          }
+        }
+
+        return contactos;
       }
 
-      // Estado de carga
-      btnEnviar.disabled = true;
-      btnEnviar.innerHTML = '⏳ Enviando...';
+      async function cargarContactos() {
+        try {
+          document.getElementById("status").textContent = "🔄 Actualizando...";
+          document.getElementById("status").className = "status";
 
-      // ✅ FIX CORS para GitHub Pages + Google Apps Script
-      const formData = new FormData();
-      formData.append('nombre', nombre);
-      formData.append('telefono', telefono);
-      formData.append('timestamp', new Date().toLocaleString('es-ES'));
-      formData.append('ip', window.location.href);
+          const response = await fetch(CSV_URL, {
+            method: "GET",
+            mode: "cors",
+          });
 
-      try {
-        const response = await fetch(WEB_APP_URL, {
-          method: 'POST',
-          mode: 'no-cors', // ← CLAVE para GitHub Pages
-          body: formData
-        });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
 
-        // Con no-cors no vemos la respuesta, pero si no hay error = éxito
-        mostrarMensaje(
-          '✅ <strong>¡Cliente guardado en Google Sheets!</strong><br>' +
-          'Ya puedes contactarlo por WhatsApp.'
-        );
-        
-        // Limpiar formulario
-        form.reset();
-        
-      } catch (error) {
-        console.error('Error completo:', error);
-        mostrarMensaje(
-          '❌ Error de conexión.<br>' +
-          '<small>Verifica la URL de Google Apps Script en el código.</small>',
-          'error'
-        );
-      } finally {
-        // Restaurar botón
-        btnEnviar.disabled = false;
-        btnEnviar.innerHTML = '📤 Guardar Contacto';
+          const csvText = await response.text();
+          const contactos = parseCSV(csvText);
+
+          renderTabla(contactos);
+        } catch (error) {
+          console.error("Error completo:", error);
+          document.getElementById(
+            "status"
+          ).innerHTML = `❌ Error: ${error.message}`;
+          document.getElementById("status").className = "status error";
+          document.getElementById("datos").innerHTML =
+            '<tr><td colspan="4" class="empty">Verifica:<br>1. SHEET_ID correcto<br>2. Hoja publicada en web (Archivo → Publicar en web)</td></tr>';
+        }
       }
-    });
 
-    // Validación en tiempo real
-    document.getElementById('nombre').addEventListener('input', function() {
-      this.style.background = this.value.trim() ? 'white' : 'rgba(255,255,255,0.8)';
-    });
-    
-    document.getElementById('telefono').addEventListener('input', function() {
-      this.style.background = this.value.trim() ? 'white' : 'rgba(255,255,255,0.8)';
-    });
-  </script>
-</body>
+      function renderTabla(contactos) {
+        const tbody = document.getElementById("datos");
+
+        if (contactos.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="4" class="empty">📭 No hay contactos registrados aún</td></tr>';
+          document.getElementById("total").textContent = "0";
+          document.getElementById("hoy").textContent = "0";
+          document.getElementById("status").textContent =
+            "📝 Esperando primeros contactos...";
+          return;
+        }
+
+        tbody.innerHTML = contactos
+          .map(
+            (contacto, index) => `
+        <tr>
+          <td style="font-weight: 600;">${contacto.nombre}</td>
+          <td>${contacto.telefono}</td>
+          <td>${contacto.fecha || "Sin fecha"}</td>
+          <td>
+            <button class="btn-wsp" onclick="abrirWhatsApp('${contacto.nombre
+              .replace(/'/g, "\\'")
+              .replace(/"/g, '\\"')}','${contacto.telefono.replace(
+              /[^0-9]/g,
+              ""
+            )}')">
+              📱 WhatsApp
+            </button>
+          </td>
+        </tr>
+      `
+          )
+          .join("");
+
+        // Estadísticas
+        document.getElementById("total").textContent = contactos.length;
+
+        const hoy = contactos.filter((c) => {
+          try {
+            const fecha = new Date(c.fecha);
+            return fecha.toDateString() === new Date().toDateString();
+          } catch {
+            return false;
+          }
+        }).length;
+        document.getElementById("hoy").textContent = hoy;
+
+        document.getElementById(
+          "status"
+        ).innerHTML = `✅ <strong>${contactos.length}</strong> contactos cargados ✓`;
+      }
+
+      function abrirWhatsApp(nombre, telefonoLimpio) {
+        const mensaje = `${nombre}, un gusto saludarle, estoy a la orden por esta vía`;
+        window.open(
+          `https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`,
+          "_blank"
+        );
+      }
+
+      // Cargar inmediatamente y auto-refresh
+      cargarContactos();
+      setInterval(cargarContactos, 10000);
+    </script>
+  </body>
 </html>
