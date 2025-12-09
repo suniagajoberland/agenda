@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Captura Cliente CCTV</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px; margin: 50px auto;
+      padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    h1 { text-align: center; margin-bottom: 30px; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: bold; }
+    input {
+      width: 100%; padding: 15px; border: none; border-radius: 8px;
+      font-size: 16px; background: rgba(255,255,255,0.9);
+    }
+    button {
+      width: 100%; padding: 18px; background: #25D366; color: white;
+      border: none; border-radius: 8px; font-size: 18px; cursor: pointer;
+    }
+    button:hover { background: #128C7E; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    #mensaje { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; }
+    #mensaje.success { background: rgba(0,255,0,0.3); }
+  </style>
+</head>
+<body>
+  <h1>👤 Nuevo Cliente CCTV</h1>
+
+  <form id="clienteForm">
+    <div class="form-group">
+      <label>Nombre completo:</label>
+      <input type="text" id="nombre" required placeholder="Juan Pérez">
+    </div>
+    <div class="form-group">
+      <label>Teléfono:</label>
+      <input type="tel" id="telefono" required placeholder="+1234567890">
+    </div>
+    <button type="submit" id="btnEnviar">📤 Guardar Contacto</button>
+  </form>
+
+  <div id="mensaje"></div>
+
+  <script>
+    // ← CAMBIA ESTA URL por la de tu Web App
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyCstfK99EcNkD8aQ3rfsGhXy32BqagrGY5vAJD9LpFpm-pQQXxV7AFrujqOzcXKZosdA/exec';
+
+    document.getElementById('clienteForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const nombre = document.getElementById('nombre').value.trim();
+      const telefono = document.getElementById('telefono').value.trim();
+      const btn = document.getElementById('btnEnviar');
+      
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            nombre, 
+            telefono, 
+            ip: `${window.location.href} (${new Date().toLocaleString()})`
+          })
+        });
+        
+        if (response.ok) {
+          document.getElementById('mensaje').innerHTML = '✅ <strong>¡Cliente guardado en Google Sheets!</strong>';
+          document.getElementById('mensaje').className = 'success';
+          document.getElementById('mensaje').style.display = 'block';
+          document.getElementById('clienteForm').reset();
+        }
+      } catch (error) {
+        document.getElementById('mensaje').innerHTML = '❌ Error de conexión';
+        document.getElementById('mensaje').style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '📤 Guardar Contacto';
+      }
+    });
+  </script>
+</body>
+</html>
