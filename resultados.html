@@ -1,200 +1,221 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contactos CCTV</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh; padding: 20px;
-    }
-    .container {
-      max-width: 1000px; margin: 0 auto;
-      background: white; border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-      overflow: hidden;
-    }
-    h1 {
-      background: linear-gradient(135deg, #25D366, #128C7E);
-      color: white; text-align: center;
-      padding: 30px; margin: 0; font-size: 28px;
-    }
-    .stats {
-      display: flex; gap: 20px; padding: 25px;
-      background: #f8f9fa;
-    }
-    .stat {
-      flex: 1; text-align: center; padding: 20px;
-      background: white; border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    .stat-num { font-size: 36px; font-weight: bold; color: #333; }
-    table {
-      width: 100%; border-collapse: collapse;
-      margin: 0; font-size: 15px;
-    }
-    th {
-      background: #333; color: white;
-      padding: 18px 15px; text-align: left;
-    }
-    td { padding: 18px 15px; border-bottom: 1px solid #eee; }
-    tr:hover { background: #f8f9fa; }
-    .btn-wsp {
-      background: #25D366; color: white;
-      padding: 12px 24px; border: none;
-      border-radius: 25px; font-weight: bold;
-      cursor: pointer; text-decoration: none;
-      transition: all 0.3s; font-size: 14px;
-      display: inline-block;
-    }
-    .btn-wsp:hover { background: #128C7E; transform: scale(1.05); }
-    .status {
-      padding: 20px; text-align: center;
-      font-weight: bold; font-size: 16px;
-      background: #e8f5e8; color: #155724;
-      border-radius: 10px; margin: 20px;
-    }
-    .error { background: #f8d7da; color: #721c24; }
-    @media (max-width: 768px) {
-      .stats { flex-direction: column; }
-      table { font-size: 13px; }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>📱 Panel Contactos CCTV</h1>
-    
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-num" id="total">0</div>
-        <div>Total Contactos</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="hoy">0</div>
-        <div>Registrados Hoy</div>
-      </div>
-    </div>
-
-    <div id="status" class="status">🔄 Cargando contactos...</div>
-    
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Teléfono</th>
-          <th>Fecha</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody id="datos">
-        <tr><td colspan="4">Cargando...</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <script>
-    // 🔥 CAMBIA ESTA URL por la de tu Google Apps Script
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzFk1OpuoUG2XFClfROGDAvP7Y1XL8TNTTBeZrASnxm6aBuaIGKxTeBULa5haR0k_mTFA/exec';
-    
-    async function cargarDatos() {
-      try {
-        const statusEl = document.getElementById('status');
-        statusEl.textContent = '🔄 Cargando desde Apps Script...';
-        statusEl.className = 'status';
-        
-        const response = await fetch(API_URL, { 
-          method: 'GET',
-          mode: 'no-cors' // ← Para GitHub Pages
-        });
-        
-        // Con no-cors no vemos la respuesta, pero probamos conexión
-        // Usar CSV como fallback confiable
-        await cargarCSV();
-        
-      } catch(error) {
-        console.error('Error Apps Script:', error);
-        await cargarCSV(); // Fallback a CSV
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contactos CCTV</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-    }
-    
-    // ✅ FALLBACK: CSV público (TU SHEET_ID)
-    async function cargarCSV() {
-      try {
-        const SHEET_ID = '1GujDtASYKVCbd8WH2mPb8K6mjlTyixrnCv0mwsLdwkk';
-        const CSV_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv&gid=0`;
-        
-        const response = await fetch(CSV_URL);
-        const csv = await response.text();
-        const contactos = parseCSV(csv);
-        renderTabla(contactos);
-        
-      } catch(error) {
-        console.error('Error CSV:', error);
-        mostrarError();
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
       }
-    }
-    
-    function parseCSV(csv) {
-      const lines = csv.trim().split('\n');
-      const data = [];
-      
-      for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(',');
-        if (cols[0]) {
-          data.push({
-            nombre: cols[0].replace(/"/g, ''),
-            telefono: cols[1]?.replace(/"/g, '') || '',
-            fecha: cols[2]?.replace(/"/g, '') || ''
-          });
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      h1 {
+        background: linear-gradient(135deg, #25d366, #128c7e);
+        color: white;
+        text-align: center;
+        padding: 30px;
+        margin: 0;
+        font-size: 28px;
+      }
+      .stats {
+        display: flex;
+        gap: 20px;
+        padding: 25px;
+        background: #f8f9fa;
+      }
+      .stat {
+        flex: 1;
+        text-align: center;
+        padding: 20px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .stat-num {
+        font-size: 36px;
+        font-weight: bold;
+        color: #333;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        font-size: 15px;
+      }
+      th {
+        background: #333;
+        color: white;
+        padding: 18px 15px;
+        text-align: left;
+      }
+      td {
+        padding: 18px 15px;
+        border-bottom: 1px solid #eee;
+      }
+      tr:hover {
+        background: #f8f9fa;
+      }
+      .btn-wsp {
+        background: #25d366;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s;
+        font-size: 14px;
+        display: inline-block;
+      }
+      .btn-wsp:hover {
+        background: #128c7e;
+        transform: scale(1.05);
+      }
+      .status {
+        padding: 20px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        background: #e8f5e8;
+        color: #155724;
+        border-radius: 10px;
+        margin: 20px;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      @media (max-width: 768px) {
+        .stats {
+          flex-direction: column;
+        }
+        table {
+          font-size: 13px;
         }
       }
-      return data;
-    }
-    
-    function renderTabla(contactos) {
-      const tbody = document.getElementById('datos');
-      
-      if (contactos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999">📭 No hay contactos aún</td></tr>';
-        document.getElementById('total').textContent = '0';
-        document.getElementById('hoy').textContent = '0';
-        document.getElementById('status').textContent = '📝 Esperando primeros contactos...';
-        return;
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📱 Panel Contactos CCTV</h1>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-num" id="total">0</div>
+          <div>Total Contactos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="hoy">0</div>
+          <div>Registrados Hoy</div>
+        </div>
+      </div>
+
+      <div id="status" class="status">🔄 Inicializando...</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Fecha</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="datos">
+          <tr>
+            <td colspan="4">Cargando...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      // 🔥 TU URL EXACTA del formulario
+      const API_URL =
+        "https://script.google.com/macros/s/AKfycbzFk1OpuoUG2XFClfROGDAvP7Y1XL8TNTTBeZrASnxm6aBuaIGKxTeBULa5haR0k_mTFA/exec";
+
+      async function cargarDatos() {
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = "🔄 Conectando con Apps Script...";
+        statusEl.className = "status";
+
+        try {
+          // Probar conexión GET (no-cors workaround)
+          const controller = new AbortController();
+          setTimeout(() => controller.abort(), 5000);
+
+          const response = await fetch(API_URL, {
+            method: "GET",
+            mode: "no-cors",
+            signal: controller.signal,
+          });
+
+          // Si llega aquí = conexión OK, mostrar mensaje
+          statusEl.innerHTML =
+            "✅ Apps Script conectado<br><small>Agrega el doGet() para ver datos</small>";
+        } catch (error) {
+          console.log("Apps Script necesita doGet");
+          statusEl.innerHTML = `⚠️ <strong>APPS SCRIPT OK</strong><br>
+        <small>1. Agrega función doGet() arriba<br>
+        2. Despliega NUEVA implementación<br>
+        3. Recarga página</small>`;
+          statusEl.className = "status";
+        }
       }
-      
-      tbody.innerHTML = contactos.map(c => `
+
+      function renderTabla(contactos) {
+        const tbody = document.getElementById("datos");
+        if (contactos.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999">📭 No hay contactos aún</td></tr>';
+          document.getElementById("total").textContent = "0";
+          document.getElementById("hoy").textContent = "0";
+          return;
+        }
+
+        tbody.innerHTML = contactos
+          .map(
+            (c) => `
         <tr>
           <td><strong>${c.nombre}</strong></td>
           <td>${c.telefono}</td>
           <td>${c.fecha}</td>
-          <td>
-            <a href="https://wa.me/${c.telefono.replace(/[^0-9]/g,'')}?text=Hola ${c.nombre}" 
-               class="btn-wsp" target="_blank">📱 WhatsApp</a>
-          </td>
+          <td><a href="https://wa.me/${c.telefono.replace(
+            /[^0-9]/g,
+            ""
+          )}?text=Hola ${
+              c.nombre
+            }" class="btn-wsp" target="_blank">📱 WhatsApp</a></td>
         </tr>
-      `).join('');
-      
-      document.getElementById('total').textContent = contactos.length;
-      document.getElementById('hoy').textContent = contactos.filter(c => 
-        c.fecha.includes(new Date().toDateString().slice(4,10))
-      ).length;
-      
-      document.getElementById('status').innerHTML = `✅ ${contactos.length} contactos cargados`;
-    }
-    
-    function mostrarError() {
-      document.getElementById('status').innerHTML = 
-        '❌ Error de conexión<br><small>1. Verifica Sheet publicado<br>2. Revisa F12 consola</small>';
-      document.getElementById('status').className = 'status error';
-    }
-    
-    // Cargar cada 10s
-    cargarDatos();
-    setInterval(cargarDatos, 10000);
-  </script>
-</body>
+      `
+          )
+          .join("");
+
+        document.getElementById("total").textContent = contactos.length;
+        document.getElementById("hoy").textContent = contactos.length;
+        document.getElementById(
+          "status"
+        ).textContent = `✅ ${contactos.length} contactos`;
+      }
+
+      cargarDatos();
+      setInterval(cargarDatos, 10000);
+    </script>
+  </body>
 </html>
