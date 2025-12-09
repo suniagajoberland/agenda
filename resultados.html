@@ -3,187 +3,145 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Contactos CCTV - Google Sheets</title>
+  <title>Contactos CCTV</title>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      margin: 0; padding: 20px; background: #f0f2f5;
+    body { 
+      font-family: Arial, sans-serif; 
+      max-width: 900px; margin: 40px auto; 
+      padding: 20px; background: #f5f5f5; 
     }
-    .container {
-      max-width: 1200px; margin: 0 auto;
-      background: white; border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      overflow: hidden;
+    h1 { text-align: center; color: #333; margin-bottom: 30px; }
+    table { 
+      width: 100%; border-collapse: collapse; 
+      background: white; border-radius: 10px; 
+      overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
-    h1 {
+    th { 
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white; margin: 0; padding: 25px;
-      text-align: center; font-size: 28px;
+      color: white; padding: 15px 12px; text-align: left; 
     }
-    .stats {
-      display: flex; gap: 20px; padding: 20px;
-      background: #f8f9fa;
-    }
-    .stat {
-      flex: 1; text-align: center; padding: 15px;
-      background: white; border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .stat-num { font-size: 32px; font-weight: bold; color: #333; }
-    table {
-      width: 100%; border-collapse: collapse;
-      font-size: 14px;
-    }
-    th {
-      background: #333; color: white;
-      padding: 15px 10px; text-align: left;
-    }
-    td { padding: 12px 10px; border-bottom: 1px solid #eee; }
+    td { padding: 15px 12px; border-bottom: 1px solid #eee; }
     tr:hover { background: #f8f9fa; }
-    .btn {
-      padding: 6px 12px; border: none;
-      border-radius: 6px; font-size: 12px;
-      cursor: pointer; margin-right: 5px;
-      font-weight: 500; text-decoration: none;
-      display: inline-block;
+    .btn-wsp { 
+      background: #25D366; color: white; 
+      padding: 10px 20px; text-decoration: none; 
+      border-radius: 25px; font-weight: bold; 
+      display: inline-block; transition: all 0.3s;
     }
-    .btn-wsp { background: #25D366; color: white; }
-    .btn-wsp:hover { background: #128C7E; }
-    #mensaje {
-      padding: 15px 20px; margin: 15px 20px;
-      border-radius: 8px; display: none;
-      font-weight: 500;
+    .btn-wsp:hover { background: #128C7E; transform: scale(1.05); }
+    .status { 
+      text-align: center; padding: 20px; 
+      background: #e8f5e8; border-radius: 10px; 
+      margin-bottom: 20px; font-weight: bold; 
     }
-    #mensaje.success { background: #d4edda; color: #155724; }
-    #mensaje.error { background: #f8d7da; color: #721c24; }
-    .loading { text-align: center; padding: 40px; color: #999; }
+    .empty { color: #999; font-style: italic; }
     @media (max-width: 768px) {
-      .stats { flex-direction: column; }
-      table { font-size: 12px; }
-      .btn { padding: 4px 8px; font-size: 11px; }
+      table { font-size: 14px; }
+      th, td { padding: 10px 8px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📋 Panel de Contactos CCTV</h1>
-    <div id="mensaje"></div>
-    
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-num" id="totalContactos">0</div>
-        <div>Total Contactos</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="hoy">0</div>
-        <div>Hoy</div>
-      </div>
-    </div>
-
-    <table id="tablaContactos">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Teléfono</th>
-          <th>Fecha</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td colspan="4" class="loading">Cargando contactos de Google Sheets...</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <h1>📋 Panel de Contactos CCTV</h1>
+  
+  <div id="status" class="status">🔄 Cargando contactos...</div>
+  
+  <table id="tablaContactos">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Fecha</th>
+        <th>WhatsApp</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <tr><td colspan="4" class="empty">Cargando...</td></tr>
+    </tbody>
+  </table>
 
   <script>
-    // ← CAMBIA ESTOS VALORES ←
-    const SHEET_ID = '1GujDtASYKVCbd8WH2mPb8K6mjlTyixrnCv0mwsLdwkk'; // Ej: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms
-    const API_KEY = '22682499162-q2cpis5vbeo02ekeufqojeuqfgc3fp21.apps.googleusercontent.com'; // Obtén gratis en console.cloud.google.com/apis/library/sheets.googleapis.com
+    // ← PEGA TU SHEET_ID AQUÍ (de la URL después de /d/) →
+    const SHEET_ID = 'GujDtASYKVCbd8WH2mPb8K6mjlTyixrnCv0mwsLdwkk';
+    const SHEET_NAME = 'Sheet1'; // Cambia si tu hoja se llama diferente
     
-    const API_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`;
-
+    // FUNCIÓN que PUBLICA tu Sheet como JSON (¡GRATIS!)
+    const SHEET_JSON_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pubhtml`;
+    
     async function cargarContactos() {
       try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
+        document.getElementById('status').textContent = '🔄 Actualizando...';
         
-        if (data.values && data.values.length > 0) {
-          // Primera fila = encabezados, resto = datos
-          const contactos = data.values.slice(1).map((row, index) => ({
-            id: index + 1, // ID secuencial para Sheets
-            nombre: row[0] || '',
-            telefono: row[1] || '',
-            fecha: row[2] || ''
-          })).filter(c => c.nombre); // Filtra filas vacías
+        // Método 1: Sheet PUBLICADO como web (más simple)
+        const response = await fetch(SHEET_JSON_URL);
+        const html = await response.text();
+        
+        // Extraer datos del HTML publicado
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const table = doc.querySelector('table');
+        
+        if (table) {
+          const rows = Array.from(table.querySelectorAll('tr')).slice(1); // Skip header
+          const contactos = rows.map(row => {
+            const cells = row.querySelectorAll('td');
+            return {
+              nombre: cells[0]?.textContent?.trim() || '',
+              telefono: cells[1]?.textContent?.trim() || '',
+              fecha: cells[2]?.textContent?.trim() || ''
+            };
+          }).filter(c => c.nombre); // Solo con nombre
           
           renderTabla(contactos);
-          actualizarStats(contactos);
+          document.getElementById('status').innerHTML = `✅ <strong>${contactos.length} contactos</strong> cargados`;
+          
         } else {
-          mostrarTablaVacia();
+          mostrarVacio();
         }
-      } catch (error) {
-        console.error('Error Sheets:', error);
-        document.querySelector('#tablaContactos tbody').innerHTML = 
-          '<tr><td colspan="4" style="text-align:center;padding:40px;color:#e74c3c">❌ Error al cargar Google Sheets. Verifica SHEET_ID y API_KEY</td></tr>';
+      } catch(error) {
+        console.error('Error:', error);
+        // Fallback: mensaje simple
+        mostrarVacio('No se pueden cargar datos. Verifica SHEET_ID');
       }
     }
-
+    
     function renderTabla(contactos) {
-      const tbody = document.querySelector('#tablaContactos tbody');
+      const tbody = document.getElementById('tbody');
       
       if (contactos.length === 0) {
-        mostrarTablaVacia();
+        mostrarVacio();
         return;
       }
-
-      tbody.innerHTML = contactos.map(contacto => `
-        <tr data-id="${contacto.id}">
-          <td>${contacto.nombre}</td>
+      
+      tbody.innerHTML = contactos.map((contacto, i) => `
+        <tr>
+          <td><strong>${contacto.nombre}</strong></td>
           <td>${contacto.telefono}</td>
           <td>${contacto.fecha}</td>
           <td>
-            <a href="#" class="btn btn-wsp" onclick="abrirWhatsApp('${contacto.nombre}', '${contacto.telefono}')">
-              📱 WhatsApp
+            <a href="#" class="btn-wsp" onclick="abrirWhatsApp('${contacto.nombre}', '${contacto.telefono}')">
+              📱 Contactar
             </a>
           </td>
         </tr>
       `).join('');
     }
-
-    function mostrarTablaVacia() {
-      document.querySelector('#tablaContactos tbody').innerHTML = 
-        '<tr><td colspan="4" style="text-align:center;padding:40px;color:#999">📭 No hay contactos registrados aún</td></tr>';
+    
+    function mostrarVacio(mensaje = 'No hay contactos aún') {
+      document.getElementById('tbody').innerHTML = 
+        `<tr><td colspan="4" class="empty" style="text-align:center; padding:40px">${mensaje}</td></tr>`;
+      document.getElementById('status').textContent = '📭 Esperando primeros contactos...';
     }
-
-    function actualizarStats(contactos) {
-      document.getElementById('totalContactos').textContent = contactos.length;
-      
-      const hoy = contactos.filter(c => {
-        const fecha = new Date(c.fecha);
-        const hoy = new Date();
-        return fecha.toDateString() === hoy.toDateString();
-      }).length;
-      document.getElementById('hoy').textContent = hoy;
-    }
-
-    function mostrarMensaje(texto, tipo = 'success') {
-      const msg = document.getElementById('mensaje');
-      msg.textContent = texto;
-      msg.className = tipo;
-      msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 3000);
-    }
-
-    window.abrirWhatsApp = (nombre, telefono) => {
-      const telefonoLimpio = telefono.replace(/[^0-9]/g, '');
+    
+    function abrirWhatsApp(nombre, telefono) {
+      const telLimpio = telefono.replace(/[^0-9]/g, '');
       const mensaje = `${nombre}, un gusto saludarle, estoy a la orden por esta vía`;
-      const url = `https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`;
-      window.open(url, '_blank');
-    };
-
-    // Cargar al iniciar y auto-refresh
+      window.open(`https://wa.me/${telLimpio}?text=${encodeURIComponent(mensaje)}`, '_blank');
+    }
+    
+    // Cargar cada 10 segundos
     cargarContactos();
-    setInterval(cargarContactos, 10000); // Cada 10 segundos
+    setInterval(cargarContactos, 10000);
   </script>
 </body>
 </html>
