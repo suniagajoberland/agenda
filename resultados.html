@@ -1,294 +1,183 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel Contactos CCTV</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 20px;
-      }
-      .container {
-        max-width: 1100px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-      }
-      h1 {
-        background: linear-gradient(135deg, #25d366, #128c7e);
-        color: white;
-        text-align: center;
-        padding: 30px;
-        margin: 0;
-        font-size: 28px;
-      }
-      .stats {
-        display: flex;
-        gap: 20px;
-        padding: 25px;
-        background: #f8f9fa;
-      }
-      .stat {
-        flex: 1;
-        text-align: center;
-        padding: 20px;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-      .stat-num {
-        font-size: 36px;
-        font-weight: bold;
-        color: #333;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 15px;
-      }
-      th {
-        background: #333;
-        color: white;
-        padding: 18px 15px;
-        text-align: left;
-      }
-      td {
-        padding: 18px 15px;
-        border-bottom: 1px solid #eee;
-      }
-      tr:hover {
-        background: #f8f9fa;
-      }
-      .btn-wsp {
-        background: #25d366;
-        color: white;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 25px;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 14px;
-        transition: all 0.3s;
-      }
-      .btn-wsp:hover {
-        background: #128c7e;
-        transform: scale(1.05);
-      }
-      .status {
-        padding: 20px;
-        text-align: center;
-        font-weight: bold;
-        font-size: 16px;
-        background: #e8f5e8;
-        color: #155724;
-        border-radius: 10px;
-        margin: 20px;
-      }
-      .status.error {
-        background: #f8d7da;
-        color: #721c24;
-      }
-      .empty {
-        color: #999;
-        font-style: italic;
-        text-align: center;
-        padding: 50px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>📱 Panel Contactos CCTV</h1>
-
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-num" id="total">0</div>
-          <div>Total Contactos</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num" id="hoy">0</div>
-          <div>Registrados Hoy</div>
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contactos CCTV</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh; padding: 20px;
+    }
+    .container {
+      max-width: 1000px; margin: 0 auto;
+      background: white; border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+    h1 {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      color: white; text-align: center;
+      padding: 30px; margin: 0; font-size: 28px;
+    }
+    .stats {
+      display: flex; gap: 20px; padding: 25px;
+      background: #f8f9fa;
+    }
+    .stat {
+      flex: 1; text-align: center; padding: 20px;
+      background: white; border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .stat-num { font-size: 36px; font-weight: bold; color: #333; }
+    table {
+      width: 100%; border-collapse: collapse;
+      margin: 0; font-size: 15px;
+    }
+    th {
+      background: #333; color: white;
+      padding: 18px 15px; text-align: left;
+    }
+    td { padding: 18px 15px; border-bottom: 1px solid #eee; }
+    tr:hover { background: #f8f9fa; }
+    .btn-wsp {
+      background: #25D366; color: white;
+      padding: 12px 24px; border: none;
+      border-radius: 25px; font-weight: bold;
+      cursor: pointer; text-decoration: none;
+      transition: all 0.3s; font-size: 14px;
+    }
+    .btn-wsp:hover { background: #128C7E; transform: scale(1.05); }
+    .status {
+      padding: 20px; text-align: center;
+      font-weight: bold; font-size: 16px;
+      background: #e8f5e8; color: #155724;
+      border-radius: 10px; margin: 20px;
+    }
+    .error { background: #f8d7da; color: #721c24; }
+    @media (max-width: 768px) {
+      .stats { flex-direction: column; }
+      table { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 Panel Contactos CCTV</h1>
+    
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="total">0</div>
+        <div>Total Contactos</div>
       </div>
-
-      <div id="status" class="status">🔄 Cargando contactos...</div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Teléfono</th>
-            <th>Fecha</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody id="datos">
-          <tr>
-            <td colspan="4" class="empty">Cargando...</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="stat">
+        <div class="stat-num" id="hoy">0</div>
+        <div>Registrados Hoy</div>
+      </div>
     </div>
 
-    <script>
-      // ← CAMBIA SOLO ESTE SHEET_ID (44 caracteres de tu URL) →
-      const SHEET_ID = "1GujDtASYKVCbd8WH2mPb8K6mjlTyixrnCv0mwsLdwkk";
-      const CSV_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
-
-      /** PARSEO ROBUSTO CSV - Maneja comas, saltos, encoding */
-      function parseCSV(csvText) {
-        const lines = csvText
-          .split("")
-          .map((line) => line.trim())
-          .filter((line) => line);
-        if (lines.length < 2) return [];
-
-        const contactos = [];
-
-        // Skip header (primera línea)
-        for (let i = 1; i < lines.length; i++) {
-          const line = lines[i];
-          if (!line) continue;
-
-          // Parseo robusto: maneja comas en nombres/teléfonos
-          let nombre = "";
-          let telefono = "";
-          let fecha = "";
-
-          // Split por primera coma → nombre
-          const firstComma = line.indexOf(",");
-          if (firstComma !== -1) {
-            nombre = line.substring(0, firstComma).trim();
-
-            // Resto de la línea → teléfono y fecha
-            const resto = line.substring(firstComma + 1).trim();
-            const secondComma = resto.indexOf(",");
-            if (secondComma !== -1) {
-              telefono = resto.substring(0, secondComma).trim();
-              fecha = resto.substring(secondComma + 1).trim();
-            } else {
-              telefono = resto;
-            }
-          } else {
-            nombre = line;
-          }
-
-          // Solo agregar si tiene nombre
-          if (nombre && nombre !== "Nombre" && nombre !== "nombre") {
-            contactos.push({
-              nombre: nombre.replace(/"/g, ""),
-              telefono: telefono.replace(/"/g, ""),
-              fecha: fecha.replace(/"/g, ""),
-            });
-          }
-        }
-
-        return contactos;
-      }
-
-      async function cargarContactos() {
-        try {
-          document.getElementById("status").textContent = "🔄 Actualizando...";
-          document.getElementById("status").className = "status";
-
-          const response = await fetch(CSV_URL, {
-            method: "GET",
-            mode: "cors",
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-
-          const csvText = await response.text();
-          const contactos = parseCSV(csvText);
-
-          renderTabla(contactos);
-        } catch (error) {
-          console.error("Error completo:", error);
-          document.getElementById(
-            "status"
-          ).innerHTML = `❌ Error: ${error.message}`;
-          document.getElementById("status").className = "status error";
-          document.getElementById("datos").innerHTML =
-            '<tr><td colspan="4" class="empty">Verifica:<br>1. SHEET_ID correcto<br>2. Hoja publicada en web (Archivo → Publicar en web)</td></tr>';
-        }
-      }
-
-      function renderTabla(contactos) {
-        const tbody = document.getElementById("datos");
-
-        if (contactos.length === 0) {
-          tbody.innerHTML =
-            '<tr><td colspan="4" class="empty">📭 No hay contactos registrados aún</td></tr>';
-          document.getElementById("total").textContent = "0";
-          document.getElementById("hoy").textContent = "0";
-          document.getElementById("status").textContent =
-            "📝 Esperando primeros contactos...";
-          return;
-        }
-
-        tbody.innerHTML = contactos
-          .map(
-            (contacto, index) => `
+    <div id="status" class="status">🔄 Cargando contactos...</div>
+    
+    <table>
+      <thead>
         <tr>
-          <td style="font-weight: 600;">${contacto.nombre}</td>
-          <td>${contacto.telefono}</td>
-          <td>${contacto.fecha || "Sin fecha"}</td>
+          <th>Nombre</th>
+          <th>Teléfono</th>
+          <th>Fecha</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="datos">
+        <tr><td colspan="4">Cargando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // ← SOLO CAMBIA ESTE SHEET_ID (de tu URL de Sheets) →
+    const SHEET_ID = '1GujDtASYKVCbd8WH2mPb8K6mjlTyixrnCv0mwsLdwkk';
+    
+    // ← URL CSV PÚBLICA (¡SIN API_KEY!) →
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
+    
+    async function cargarDatos() {
+      try {
+        document.getElementById('status').textContent = '🔄 Actualizando...';
+        document.getElementById('status').className = 'status';
+        
+        const response = await fetch(CSV_URL);
+        const csv = await response.text();
+        
+        // Parsear CSV simple
+        const lines = csv.trim().split('');
+        if (lines.length < 2) throw new Error('Hoja vacía');
+        
+        const contactos = lines.slice(1).map(line => {
+          const cols = line.split(',');
+          return {
+            nombre: cols[0]?.trim() || '',
+            telefono: cols[1]?.trim() || '',
+            fecha: cols[2]?.trim() || ''
+          };
+        }).filter(c => c.nombre);
+        
+        renderTabla(contactos);
+        
+      } catch(error) {
+        console.error('Error:', error);
+        document.getElementById('status').innerHTML = '❌ Error: Hoja no publicada o SHEET_ID incorrecto';
+        document.getElementById('status').className = 'status error';
+        document.getElementById('datos').innerHTML = '<tr><td colspan="4">Verifica que tu Sheet esté <strong>publicado en web</strong></td></tr>';
+      }
+    }
+    
+    function renderTabla(contactos) {
+      const tbody = document.getElementById('datos');
+      
+      if (contactos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999">📭 No hay contactos aún</td></tr>';
+        document.getElementById('total').textContent = '0';
+        document.getElementById('hoy').textContent = '0';
+        document.getElementById('status').textContent = '📝 Esperando primeros contactos...';
+        return;
+      }
+      
+      tbody.innerHTML = contactos.map((c, i) => `
+        <tr>
+          <td><strong>${c.nombre}</strong></td>
+          <td>${c.telefono}</td>
+          <td>${c.fecha}</td>
           <td>
-            <button class="btn-wsp" onclick="abrirWhatsApp('${contacto.nombre
-              .replace(/'/g, "\\'")
-              .replace(/"/g, '\\"')}','${contacto.telefono.replace(
-              /[^0-9]/g,
-              ""
-            )}')">
+            <button class="btn-wsp" onclick="whatsapp('${c.nombre}','${c.telefono}')">
               📱 WhatsApp
             </button>
           </td>
         </tr>
-      `
-          )
-          .join("");
-
-        // Estadísticas
-        document.getElementById("total").textContent = contactos.length;
-
-        const hoy = contactos.filter((c) => {
-          try {
-            const fecha = new Date(c.fecha);
-            return fecha.toDateString() === new Date().toDateString();
-          } catch {
-            return false;
-          }
-        }).length;
-        document.getElementById("hoy").textContent = hoy;
-
-        document.getElementById(
-          "status"
-        ).innerHTML = `✅ <strong>${contactos.length}</strong> contactos cargados ✓`;
-      }
-
-      function abrirWhatsApp(nombre, telefonoLimpio) {
-        const mensaje = `${nombre}, un gusto saludarle, estoy a la orden por esta vía`;
-        window.open(
-          `https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`,
-          "_blank"
-        );
-      }
-
-      // Cargar inmediatamente y auto-refresh
-      cargarContactos();
-      setInterval(cargarContactos, 10000);
-    </script>
-  </body>
+      `).join('');
+      
+      // Stats
+      document.getElementById('total').textContent = contactos.length;
+      
+      const hoy = contactos.filter(c => {
+        const f = new Date(c.fecha);
+        return f.toDateString() === new Date().toDateString();
+      }).length;
+      document.getElementById('hoy').textContent = hoy;
+      
+      document.getElementById('status').innerHTML = `✅ ${contactos.length} contactos cargados`;
+    }
+    
+    function whatsapp(nombre, tel) {
+      const cleanTel = tel.replace(/[^0-9]/g, '');
+      const msg = `${nombre}, un gusto saludarle, estoy a la orden por esta vía`;
+      window.open(`https://wa.me/${cleanTel}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+    
+    // Cargar inmediatamente y cada 10s
+    cargarDatos();
+    setInterval(cargarDatos, 10000);
+  </script>
+</body>
 </html>
