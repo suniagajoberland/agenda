@@ -1,164 +1,220 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contactos CCTV</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh; padding: 20px;
-    }
-    .container {
-      max-width: 1000px; margin: 0 auto;
-      background: white; border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-      overflow: hidden;
-    }
-    h1 {
-      background: linear-gradient(135deg, #25D366, #128C7E);
-      color: white; text-align: center;
-      padding: 30px; margin: 0; font-size: 28px;
-    }
-    .stats {
-      display: flex; gap: 20px; padding: 25px;
-      background: #f8f9fa;
-    }
-    .stat {
-      flex: 1; text-align: center; padding: 20px;
-      background: white; border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    .stat-num { font-size: 36px; font-weight: bold; color: #333; }
-    table {
-      width: 100%; border-collapse: collapse;
-      margin: 0; font-size: 15px;
-    }
-    th {
-      background: #333; color: white;
-      padding: 18px 15px; text-align: left;
-    }
-    td { padding: 18px 15px; border-bottom: 1px solid #eee; }
-    tr:hover { background: #f8f9fa; }
-    .btn-wsp {
-      background: #25D366; color: white;
-      padding: 12px 24px; border: none;
-      border-radius: 25px; font-weight: bold;
-      cursor: pointer; text-decoration: none;
-      transition: all 0.3s; font-size: 14px;
-      display: inline-block;
-    }
-    .btn-wsp:hover { background: #128C7E; transform: scale(1.05); }
-    .status {
-      padding: 20px; text-align: center;
-      font-weight: bold; font-size: 16px;
-      background: #e8f5e8; color: #155724;
-      border-radius: 10px; margin: 20px;
-    }
-    .error { background: #f8d7da; color: #721c24; }
-    @media (max-width: 768px) {
-      .stats { flex-direction: column; }
-      table { font-size: 13px; }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>📱 Panel Contactos CCTV</h1>
-    
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-num" id="total">0</div>
-        <div>Total Contactos</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contactos CCTV</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      h1 {
+        background: linear-gradient(135deg, #25d366, #128c7e);
+        color: white;
+        text-align: center;
+        padding: 30px;
+        margin: 0;
+        font-size: 28px;
+      }
+      .stats {
+        display: flex;
+        gap: 20px;
+        padding: 25px;
+        background: #f8f9fa;
+      }
+      .stat {
+        flex: 1;
+        text-align: center;
+        padding: 20px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .stat-num {
+        font-size: 36px;
+        font-weight: bold;
+        color: #333;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        font-size: 15px;
+      }
+      th {
+        background: #333;
+        color: white;
+        padding: 18px 15px;
+        text-align: left;
+      }
+      td {
+        padding: 18px 15px;
+        border-bottom: 1px solid #eee;
+      }
+      tr:hover {
+        background: #f8f9fa;
+      }
+      .btn-wsp {
+        background: #25d366;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s;
+        font-size: 14px;
+        display: inline-block;
+      }
+      .btn-wsp:hover {
+        background: #128c7e;
+        transform: scale(1.05);
+      }
+      .status {
+        padding: 20px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        background: #e8f5e8;
+        color: #155724;
+        border-radius: 10px;
+        margin: 20px;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      @media (max-width: 768px) {
+        .stats {
+          flex-direction: column;
+        }
+        table {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📱 Panel Contactos CCTV</h1>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-num" id="total">0</div>
+          <div>Total Contactos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="hoy">0</div>
+          <div>Registrados Hoy</div>
+        </div>
       </div>
-      <div class="stat">
-        <div class="stat-num" id="hoy">0</div>
-        <div>Registrados Hoy</div>
-      </div>
+
+      <div id="status" class="status">🔄 Cargando contactos...</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Fecha</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="datos">
+          <tr>
+            <td colspan="4">Cargando...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <div id="status" class="status">🔄 Cargando contactos...</div>
-    
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Teléfono</th>
-          <th>Fecha</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody id="datos">
-        <tr><td colspan="4">Cargando...</td></tr>
-      </tbody>
-    </table>
-  </div>
+    <script>
+      // 🔥 MISMA URL del formulario
+      const API_URL =
+        "https://script.google.com/macros/s/AKfycbyKaOE2kXp6P1xxPl1tNRZeyzXKQYaTyfbxbjTLa4ZTk815XaVUHknJT6XUzHO7R-mY9A/exec";
 
-  <script>
-    // ✅ TU NUEVA URL (FUNCIONA)
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyKaOE2kXp6P1xxPl1tNRZeyzXKQYaTyfbxbjTLa4ZTk815XaVUHknJT6XUzHO7R-mY9A/exec';
-    
-    async function cargarDatos() {
-      const statusEl = document.getElementById('status');
-      statusEl.textContent = '🔄 Conectando...';
-      
-      try {
-        // Proxy CORS para leer JSON
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(API_URL)}`;
-        const response = await fetch(proxyUrl);
-        const text = await response.text();
-        
-        let contactos;
+      async function cargarDatos() {
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = "🔄 Conectando...";
+
         try {
-          contactos = JSON.parse(text);
-        } catch {
-          throw new Error('No es JSON válido');
+          // Proxy para evitar CORS
+          const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
+            API_URL
+          )}`;
+          const response = await fetch(proxyUrl);
+          const text = await response.text();
+          const contactos = JSON.parse(text);
+
+          renderTabla(contactos);
+        } catch (error) {
+          console.error("Error:", error);
+          statusEl.innerHTML =
+            "❌ Verifica que agregaste doGet() y desplegaste";
+          statusEl.className = "status error";
         }
-        
-        renderTabla(Array.isArray(contactos) ? contactos : []);
-      } catch(error) {
-        console.error('Error:', error);
-        statusEl.innerHTML = `❌ Error de conexión<br><small>1. Verifica datos en Sheet<br>2. F12 → Console</small>`;
-        statusEl.className = 'status error';
       }
-    }
-    
-    function renderTabla(contactos) {
-      const tbody = document.getElementById('datos');
-      const totalEl = document.getElementById('total');
-      const hoyEl = document.getElementById('hoy');
-      const statusEl = document.getElementById('status');
-      
-      if (!contactos || contactos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999">📭 No hay contactos aún</td></tr>';
-        totalEl.textContent = '0';
-        hoyEl.textContent = '0';
-        statusEl.textContent = '📝 Esperando primeros contactos desde index.html...';
-        return;
-      }
-      
-      tbody.innerHTML = contactos.map(c => `
+
+      function renderTabla(contactos) {
+        const tbody = document.getElementById("datos");
+        const totalEl = document.getElementById("total");
+        const hoyEl = document.getElementById("hoy");
+        const statusEl = document.getElementById("status");
+
+        if (!contactos || contactos.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999">📭 No hay contactos aún</td></tr>';
+          totalEl.textContent = "0";
+          hoyEl.textContent = "0";
+          statusEl.textContent = "📝 Esperando primeros contactos...";
+          return;
+        }
+
+        tbody.innerHTML = contactos
+          .map(
+            (c) => `
         <tr>
           <td><strong>${c.nombre}</strong></td>
           <td>${c.telefono}</td>
           <td>${c.fecha}</td>
           <td>
-            <a href="https://wa.me/${c.telefono.replace(/[^0-9]/g,'')}?text=Hola ${c.nombre}, ¿en qué puedo ayudarte?" 
+            <a href="https://wa.me/${c.telefono.replace(
+              /[^0-9]/g,
+              ""
+            )}?text=Hola ${c.nombre}, ¿en qué puedo ayudarte?" 
                class="btn-wsp" target="_blank">📱 WhatsApp</a>
           </td>
         </tr>
-      `).join('');
-      
-      totalEl.textContent = contactos.length;
-      hoyEl.textContent = contactos.filter(c => c.fecha.includes('2025')).length;
-      statusEl.innerHTML = `✅ ${contactos.length} contactos cargados`;
-    }
-    
-    // Cargar cada 10s
-    cargarDatos();
-    setInterval(cargarDatos, 10000);
-  </script>
-</body>
+      `
+          )
+          .join("");
+
+        totalEl.textContent = contactos.length;
+        hoyEl.textContent = contactos.filter((c) =>
+          c.fecha.includes("2025")
+        ).length;
+        statusEl.innerHTML = `✅ ${contactos.length} contactos cargados`;
+      }
+
+      cargarDatos();
+      setInterval(cargarDatos, 10000);
+    </script>
+  </body>
 </html>
