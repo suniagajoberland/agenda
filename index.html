@@ -73,8 +73,8 @@
   </div>
 
   <script>
-    // 🔥 TU URL de Google Apps Script
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzFk1OpuoUG2XFClfROGDAvP7Y1XL8TNTTBeZrASnxm6aBuaIGKxTeBULa5haR0k_mTFA/exec';
+    // ✅ TU NUEVA URL (FUNCIONA)
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwT-5fzKd6pC-MQo83Dx1Mdcp6jmgfVmck0rrHLvqxVaveQZZadfdQqPYJ1FnuqNdOQNQ/exec';
     
     const form = document.getElementById('clienteForm');
     const btnEnviar = document.getElementById('btnEnviar');
@@ -100,31 +100,26 @@
       }
 
       btnEnviar.disabled = true;
-      btnEnviar.innerHTML = '🔍 Verificando teléfono...';
+      btnEnviar.innerHTML = '⏳ Guardando...';
 
       const formData = new FormData();
       formData.append('accion', 'guardar');
       formData.append('nombre', nombre);
       formData.append('telefono', telefono);
-      formData.append('timestamp', new Date().toLocaleString('es-ES'));
       formData.append('ip', window.location.href);
 
       try {
-        const response = await fetch(WEB_APP_URL, {
+        await fetch(WEB_APP_URL, {
           method: 'POST',
           mode: 'no-cors',
           body: formData
         });
-
-        mostrarMensaje(
-          '✅ <strong>¡Cliente guardado correctamente!</strong><br>' +
-          'Teléfono verificado como único.'
-        );
+        
+        mostrarMensaje('✅ ¡Cliente guardado correctamente!<br>Teléfono único verificado.');
         form.reset();
         
       } catch (error) {
-        console.error('Error:', error);
-        mostrarMensaje('❌ Error de conexión o teléfono duplicado.', 'error');
+        mostrarMensaje('❌ Error de conexión', 'error');
       } finally {
         btnEnviar.disabled = false;
         btnEnviar.innerHTML = '📤 Guardar Contacto';
