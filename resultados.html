@@ -126,7 +126,7 @@
         </div>
       </div>
 
-      <div id="status" class="status">🔄 Inicializando...</div>
+      <div id="status" class="status">🔄 Cargando contactos...</div>
 
       <table>
         <thead>
@@ -146,46 +146,44 @@
     </div>
 
     <script>
-      // 🔥 TU URL EXACTA del formulario
+      // 🔥 MISMA URL del formulario
       const API_URL =
-        "https://script.google.com/macros/s/AKfycbzFk1OpuoUG2XFClfROGDAvP7Y1XL8TNTTBeZrASnxm6aBuaIGKxTeBULa5haR0k_mTFA/exec";
+        "https://script.google.com/macros/s/AKfycbzXZ105SqpBzX0z8yp2lHNRjacCnUxF83UEXccLxMTf6MYyIGzS-MITe5P21rm10dke9A/exec";
 
       async function cargarDatos() {
         const statusEl = document.getElementById("status");
-        statusEl.textContent = "🔄 Conectando con Apps Script...";
-        statusEl.className = "status";
+        statusEl.textContent = "🔄 Conectando...";
 
         try {
-          // Probar conexión GET (no-cors workaround)
-          const controller = new AbortController();
-          setTimeout(() => controller.abort(), 5000);
+          // Proxy para evitar CORS
+          const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
+            API_URL
+          )}`;
+          const response = await fetch(proxyUrl);
+          const text = await response.text();
+          const contactos = JSON.parse(text);
 
-          const response = await fetch(API_URL, {
-            method: "GET",
-            mode: "no-cors",
-            signal: controller.signal,
-          });
-
-          // Si llega aquí = conexión OK, mostrar mensaje
-          statusEl.innerHTML =
-            "✅ Apps Script conectado<br><small>Agrega el doGet() para ver datos</small>";
+          renderTabla(contactos);
         } catch (error) {
-          console.log("Apps Script necesita doGet");
-          statusEl.innerHTML = `⚠️ <strong>APPS SCRIPT OK</strong><br>
-        <small>1. Agrega función doGet() arriba<br>
-        2. Despliega NUEVA implementación<br>
-        3. Recarga página</small>`;
-          statusEl.className = "status";
+          console.error("Error:", error);
+          statusEl.innerHTML =
+            "❌ Verifica que agregaste doGet() y desplegaste";
+          statusEl.className = "status error";
         }
       }
 
       function renderTabla(contactos) {
         const tbody = document.getElementById("datos");
-        if (contactos.length === 0) {
+        const totalEl = document.getElementById("total");
+        const hoyEl = document.getElementById("hoy");
+        const statusEl = document.getElementById("status");
+
+        if (!contactos || contactos.length === 0) {
           tbody.innerHTML =
             '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999">📭 No hay contactos aún</td></tr>';
-          document.getElementById("total").textContent = "0";
-          document.getElementById("hoy").textContent = "0";
+          totalEl.textContent = "0";
+          hoyEl.textContent = "0";
+          statusEl.textContent = "📝 Esperando primeros contactos...";
           return;
         }
 
@@ -196,22 +194,23 @@
           <td><strong>${c.nombre}</strong></td>
           <td>${c.telefono}</td>
           <td>${c.fecha}</td>
-          <td><a href="https://wa.me/${c.telefono.replace(
-            /[^0-9]/g,
-            ""
-          )}?text=Hola ${
-              c.nombre
-            }" class="btn-wsp" target="_blank">📱 WhatsApp</a></td>
+          <td>
+            <a href="https://wa.me/${c.telefono.replace(
+              /[^0-9]/g,
+              ""
+            )}?text=Hola ${c.nombre}, ¿en qué puedo ayudarte?" 
+               class="btn-wsp" target="_blank">📱 WhatsApp</a>
+          </td>
         </tr>
       `
           )
           .join("");
 
-        document.getElementById("total").textContent = contactos.length;
-        document.getElementById("hoy").textContent = contactos.length;
-        document.getElementById(
-          "status"
-        ).textContent = `✅ ${contactos.length} contactos`;
+        totalEl.textContent = contactos.length;
+        hoyEl.textContent = contactos.filter((c) =>
+          c.fecha.includes("2025")
+        ).length;
+        statusEl.innerHTML = `✅ ${contactos.length} contactos cargados`;
       }
 
       cargarDatos();
