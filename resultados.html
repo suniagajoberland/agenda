@@ -3,172 +3,191 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contactos CCTV</title>
+    <title>Panel Pro CCTV - 2026</title>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
       body {
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: radial-gradient(circle at top, #00c2ff15, transparent 55%), #0a0b10;
         min-height: 100vh;
         padding: 20px;
+        color: #e0e2ef;
       }
       .container {
-        max-width: 1000px;
+        max-width: 1100px;
         margin: 0 auto;
-        background: white;
+        background: rgba(26, 26, 26, 0.95);
         border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      header {
+        background: linear-gradient(90deg, #00c2ff, #b500ff);
+        padding: 20px;
+        text-align: center;
       }
       h1 {
-        background: linear-gradient(135deg, #25d366, #128c7e);
         color: white;
-        text-align: center;
-        padding: 30px;
-        margin: 0;
-        font-size: 28px;
+        font-size: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
       }
+      /* Sección de Herramientas */
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.02);
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .search-box {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+      }
+      .search-box input {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: #15161e;
+        color: white;
+        outline: none;
+      }
+      .search-box input:focus { border-color: #00c2ff; }
+      
+      .btn-export {
+        background: #e0e2ef;
+        color: #0a0b10;
+        padding: 12px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        transition: 0.3s;
+        cursor: pointer;
+        border: none;
+      }
+      .btn-export:hover { background: #00c2ff; color: white; }
+
       .stats {
         display: flex;
-        gap: 20px;
-        padding: 25px;
-        background: #f8f9fa;
+        gap: 15px;
+        padding: 20px;
       }
       .stat {
         flex: 1;
         text-align: center;
-        padding: 20px;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        background: rgba(15, 16, 24, 0.8);
+        border-radius: 12px;
+        border: 1px solid rgba(0, 194, 255, 0.2);
       }
-      .stat-num {
-        font-size: 36px;
-        font-weight: bold;
-        color: #333;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0;
-        font-size: 15px;
-      }
+      .stat-num { font-size: 28px; font-weight: bold; color: #00c2ff; }
+      
+      /* Tabla */
+      .table-container { overflow-x: auto; }
+      table { width: 100%; border-collapse: collapse; }
       th {
-        background: #333;
-        color: white;
-        padding: 18px 15px;
+        background: #000;
+        color: #00c2ff;
+        padding: 15px;
         text-align: left;
+        font-size: 12px;
+        text-transform: uppercase;
       }
-      td {
-        padding: 18px 15px;
-        border-bottom: 1px solid #eee;
-      }
-      tr:hover {
-        background: #f8f9fa;
-      }
+      td { padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+      tr:hover { background: rgba(0, 194, 255, 0.05); }
+      
       .btn-wsp {
         background: #25d366;
         color: white;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 25px;
-        font-weight: bold;
-        cursor: pointer;
+        padding: 8px 15px;
+        border-radius: 20px;
         text-decoration: none;
-        transition: all 0.3s;
-        font-size: 14px;
-        display: inline-block;
-      }
-      .btn-wsp:hover {
-        background: #128c7e;
-        transform: scale(1.05);
-      }
-      .status {
-        padding: 20px;
-        text-align: center;
+        font-size: 12px;
         font-weight: bold;
-        font-size: 16px;
-        background: #e8f5e8;
-        color: #155724;
-        border-radius: 10px;
-        margin: 20px;
       }
-      .error {
-        background: #f8d7da;
-        color: #721c24;
+
+      #status {
+        padding: 10px;
+        text-align: center;
+        font-size: 12px;
+        color: #9ba0b5;
       }
-      @media (max-width: 768px) {
-        .stats {
-          flex-direction: column;
-        }
-        table {
-          font-size: 13px;
-        }
+
+      @media (max-width: 600px) {
+        .toolbar { flex-direction: column; align-items: stretch; }
+        .stats { flex-direction: column; }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>📱 Panel Contactos CCTV</h1>
+      <header>
+        <h1>📱 Panel Contactos CCTV</h1>
+      </header>
 
       <div class="stats">
         <div class="stat">
           <div class="stat-num" id="total">0</div>
-          <div>Total Contactos</div>
+          <div>Total Base de Datos</div>
         </div>
         <div class="stat">
           <div class="stat-num" id="hoy">0</div>
-          <div>Registrados Hoy</div>
+          <div>Registrados 2026</div>
         </div>
       </div>
 
-      <div id="status" class="status">🔄 Cargando contactos...</div>
+      <div class="toolbar">
+        <div class="search-box">
+          <input type="text" id="buscador" placeholder="🔍 Buscar por nombre o teléfono..." onkeyup="filtrarTabla()">
+        </div>
+        <button class="btn-export" onclick="exportarExcel()">📊 Exportar Excel</button>
+      </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Teléfono</th>
-            <th>Fecha</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody id="datos">
-          <tr>
-            <td colspan="4">Cargando...</td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="status">🔄 Sincronizando datos...</div>
+
+      <div class="table-container">
+        <table id="tablaContactos">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Fecha de Registro</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="datos">
+            <tr><td colspan="4" style="text-align:center; padding: 40px;">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <script>
-      // 🔥 MISMA URL del formulario
-      const API_URL =
-        "https://script.google.com/macros/s/AKfycbyKaOE2kXp6P1xxPl1tNRZeyzXKQYaTyfbxbjTLa4ZTk815XaVUHknJT6XUzHO7R-mY9A/exec";
+      const API_URL = "https://script.google.com/macros/s/AKfycbyKaOE2kXp6P1xxPl1tNRZeyzXKQYaTyfbxbjTLa4ZTk815XaVUHknJT6XUzHO7R-mY9A/exec";
+      let baseDeDatos = [];
 
       async function cargarDatos() {
-        const statusEl = document.getElementById("status");
-        statusEl.textContent = "🔄 Conectando...";
-
         try {
-          // Proxy para evitar CORS
-          const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
-            API_URL
-          )}`;
-          const response = await fetch(proxyUrl);
-          const text = await response.text();
-          const contactos = JSON.parse(text);
-
-          renderTabla(contactos);
+          const response = await fetch(API_URL);
+          const contactos = await response.json();
+          baseDeDatos = contactos;
+          renderTabla(baseDeDatos);
         } catch (error) {
-          console.error("Error:", error);
-          statusEl.innerHTML =
-            "❌ Verifica que agregaste doGet() y desplegaste";
-          statusEl.className = "status error";
+          // Intento con Proxy si falla directo
+          try {
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(API_URL + "?t=" + new Date().getTime())}`;
+            const response = await fetch(proxyUrl);
+            baseDeDatos = await response.json();
+            renderTabla(baseDeDatos);
+          } catch (e) {
+            document.getElementById("status").innerHTML = "❌ Error de conexión. Revisa la publicación del Script.";
+          }
         }
       }
 
@@ -176,45 +195,59 @@
         const tbody = document.getElementById("datos");
         const totalEl = document.getElementById("total");
         const hoyEl = document.getElementById("hoy");
-        const statusEl = document.getElementById("status");
-
+        
         if (!contactos || contactos.length === 0) {
-          tbody.innerHTML =
-            '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999">📭 No hay contactos aún</td></tr>';
-          totalEl.textContent = "0";
-          hoyEl.textContent = "0";
-          statusEl.textContent = "📝 Esperando primeros contactos...";
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;">No hay registros</td></tr>';
           return;
         }
 
-        tbody.innerHTML = contactos
-          .map(
-            (c) => `
-        <tr>
-          <td><strong>${c.nombre}</strong></td>
-          <td>${c.telefono}</td>
-          <td>${c.fecha}</td>
-          <td>
-            <a href="https://wa.me/${c.telefono.replace(
-              /[^0-9]/g,
-              ""
-            )}?text=Hola ${c.nombre}, ¿en qué puedo ayudarte?" 
-               class="btn-wsp" target="_blank">📱 WhatsApp</a>
-          </td>
-        </tr>
-      `
-          )
-          .join("");
+        const html = contactos.slice().reverse().map(c => `
+          <tr>
+            <td><strong style="color: #fff;">${c.nombre}</strong></td>
+            <td>${c.telefono}</td>
+            <td style="color: #9ba0b5;">${c.fecha}</td>
+            <td>
+              <a href="https://wa.me/${String(c.telefono).replace(/[^0-9]/g,'')}?text=Hola ${encodeURIComponent(c.nombre)}, Gracias por registrarse en la web como cliente, que productos o marca esta mas interesado en recibir promociones e informacion." 
+                 class="btn-wsp" target="_blank">WhatsApp</a>
+            </td>
+          </tr>
+        `).join("");
 
+        tbody.innerHTML = html;
         totalEl.textContent = contactos.length;
-        hoyEl.textContent = contactos.filter((c) =>
-          c.fecha.includes("2025")
-        ).length;
-        statusEl.innerHTML = `✅ ${contactos.length} contactos cargados`;
+        hoyEl.textContent = contactos.filter(c => c.fecha && c.fecha.includes("2026")).length;
+        document.getElementById("status").innerHTML = `✅ Actualizado: ${new Date().toLocaleTimeString()}`;
+      }
+
+      function filtrarTabla() {
+        const busqueda = document.getElementById("buscador").value.toLowerCase();
+        const filas = document.getElementById("datos").getElementsByTagName("tr");
+
+        for (let i = 0; i < filas.length; i++) {
+          const textoFila = filas[i].innerText.toLowerCase();
+          filas[i].style.display = textoFila.includes(busqueda) ? "" : "none";
+        }
+      }
+
+      function exportarExcel() {
+        if (baseDeDatos.length === 0) return alert("No hay datos para exportar");
+        
+        let csvContent = "data:text/csv;charset=utf-8,Nombre,Telefono,Fecha\n";
+        baseDeDatos.forEach(c => {
+          csvContent += `${c.nombre},${c.telefono},${c.fecha}\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Contactos_CCTV_2026.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
 
       cargarDatos();
-      setInterval(cargarDatos, 10000);
+      setInterval(cargarDatos, 60000); // Actualiza cada minuto
     </script>
   </body>
 </html>
