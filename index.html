@@ -3,286 +3,161 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="img/logo.jpeg" />
-    <title>👤 Registro de Cliente</title>
+    <title>Registro Seguro CCTV</title>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
+      /* Reutilizamos tus estilos anteriores con la mejora del color oscuro */
       :root {
         --primary: #00c2ff;
         --secondary: #b500ff;
         --bg-dark: #0a0b10;
-        --card-dark: #1a1a1a;
         --gray-light: #e0e2ef;
-        --text-dark: #1a1a1a; /* Color oscuro para cuando se escribe */
       }
-
       body {
-        font-family:
-          "Montserrat",
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          sans-serif;
-        max-width: 520px;
-        margin: 40px auto;
-        padding: 24px 16px;
-        background:
-          radial-gradient(circle at top, #00c2ff22, transparent 55%),
-          radial-gradient(circle at bottom, #b500ff22, transparent 55%),
-          var(--bg-dark);
+        font-family: sans-serif;
+        background: var(--bg-dark);
         color: var(--gray-light);
-        min-height: 100vh;
         display: flex;
-        align-items: center;
         justify-content: center;
+        padding: 20px;
       }
-
       .container {
+        background: #1a1a1a;
+        padding: 30px;
+        border-radius: 15px;
         width: 100%;
-        background: rgba(10, 11, 16, 0.9);
-        border-radius: 18px;
-        padding: 28px 24px;
-        border: 1px solid rgba(224, 226, 239, 0.08);
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+        max-width: 400px;
+        border: 1px solid #333;
       }
-
-      h1 {
-        text-align: center;
-        margin-bottom: 24px;
-        font-size: 20px; /* Tamaño ajustado según tus preferencias previas */
-        font-weight: 600;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        background: linear-gradient(90deg, var(--primary), var(--secondary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        display: block;
-        white-space: nowrap;
-      }
-
-      .form-group {
-        margin-bottom: 18px;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 6px;
-        font-weight: 500;
-        font-size: 13px;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        color: #9ba0b5;
-      }
-
       input {
         width: 100%;
-        padding: 12px 14px;
-        border-radius: 10px;
-        font-size: 15px;
-        border: 1px solid rgba(224, 226, 239, 0.18);
-        background: rgba(15, 16, 24, 0.95);
-        color: var(--gray-light); /* Color inicial claro */
-        transition:
-          border-color 0.25s ease,
-          box-shadow 0.25s ease,
-          background 0.25s ease,
-          color 0.2s ease;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #444;
+        background: #0f1018;
+        color: white;
+        transition: 0.3s;
       }
-
-      input::placeholder {
-        color: #63677c;
-      }
-
-      /* Estilo cuando el input tiene contenido (gracias al JS de abajo) */
       input.has-content {
         background: white !important;
-        color: var(--text-dark) !important;
-        font-weight: 500;
+        color: #1a1a1a !important;
+        font-weight: bold;
       }
-
-      input:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow:
-          0 0 0 1px rgba(0, 194, 255, 0.6),
-          0 0 18px rgba(0, 194, 255, 0.35);
-        transform: translateY(-1px) scale(1.01);
-      }
-
-      .form-group:focus-within label {
-        color: var(--primary);
-      }
-
       button {
         width: 100%;
-        padding: 14px 16px;
-        margin-top: 6px;
+        padding: 12px;
+        border-radius: 25px;
         border: none;
-        border-radius: 999px;
-        font-size: 15px;
-        font-weight: 600;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: white;
+        font-weight: bold;
         cursor: pointer;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: #ffffff;
-        box-shadow: 0 12px 30px rgba(0, 194, 255, 0.35);
-        transition:
-          transform 0.18s ease,
-          box-shadow 0.18s ease;
       }
-
-      button:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 16px 36px rgba(0, 194, 255, 0.55);
-        filter: brightness(1.03);
-      }
-
       button:disabled {
-        opacity: 0.45;
+        opacity: 0.5;
         cursor: not-allowed;
       }
-
       #mensaje {
-        margin-top: 16px;
-        padding: 12px 14px;
-        border-radius: 10px;
-        text-align: center;
-        font-weight: 500;
-        font-size: 14px;
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 8px;
         display: none;
-        background: rgba(15, 16, 24, 0.9);
+        text-align: center;
+        font-size: 14px;
       }
-
-      #mensaje.success {
-        border: 1px solid rgba(0, 194, 255, 0.6);
-        color: #75e3ff;
+      .error {
+        background: #441010;
+        color: #ff8888;
+        border: 1px solid red;
       }
-
-      #mensaje.error {
-        border: 1px solid rgba(181, 0, 255, 0.6);
-        color: #f79bff;
-      }
-
-      @media (max-width: 480px) {
-        body {
-          margin: 0;
-          padding: 20px 14px;
-          align-items: flex-start;
-        }
-        h1 {
-          font-size: 18px;
-        }
+      .success {
+        background: #104410;
+        color: #88ff88;
+        border: 1px solid green;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>👤 Registro de Cliente</h1>
-
+      <h2 style="text-align: center; font-size: 18px; margin-bottom: 20px">
+        👤 Registro de Cliente
+      </h2>
       <form id="clienteForm">
-        <div class="form-group">
-          <label>Nombre completo:</label>
-          <input
-            type="text"
-            id="nombre"
-            required
-            placeholder="Joberland Suniaga"
-            onkeydown="return /[a-zA-Záéíóúñ\s]/i.test(event.key);"
-          />
-        </div>
-
-        <div class="form-group">
-          <label>Teléfono:</label>
-          <input
-            type="number"
-            id="telefono"
-            required
-            placeholder="4143693311"
-            min="0"
-          />
-        </div>
-
-        <button type="submit" id="btnEnviar">Enviar Contacto</button>
+        <input type="text" id="nombre" placeholder="Nombre completo" required />
+        <input
+          type="number"
+          id="telefono"
+          placeholder="Teléfono (Ej: 4141234567)"
+          required
+        />
+        <button type="submit" id="btnEnviar">GUARDAR CONTACTO</button>
       </form>
-
       <div id="mensaje"></div>
     </div>
 
     <script>
-      const WEB_APP_URL =
-        "https://script.google.com/macros/s/AKfycbyKaOE2kXp6P1xxPl1tNRZeyzXKQYaTyfbxbjTLa4ZTk815XaVUHknJT6XUzHO7R-mY9A/exec";
-
+      const API_URL = "TU_URL_DE_APPS_SCRIPT_AQUI";
       const form = document.getElementById("clienteForm");
-      const btnEnviar = document.getElementById("btnEnviar");
-      const mensajeDiv = document.getElementById("mensaje");
+      const btn = document.getElementById("btnEnviar");
+      const msg = document.getElementById("mensaje");
 
-      function mostrarMensaje(texto, tipo = "success") {
-        mensajeDiv.innerHTML = texto;
-        mensajeDiv.className = tipo;
-        mensajeDiv.style.display = "block";
-        setTimeout(() => {
-          mensajeDiv.style.display = "none";
-        }, 5000);
-      }
+      // 1. Efecto de color oscuro al escribir (tu pedido anterior)
+      document.querySelectorAll("input").forEach((input) => {
+        input.addEventListener("input", function () {
+          this.classList.toggle("has-content", this.value.length > 0);
+        });
+      });
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const nombre = document.getElementById("nombre").value.trim();
-        const telefono = document.getElementById("telefono").value.trim();
-
-        if (!nombre || !telefono) {
-          mostrarMensaje("Por favor completa todos los campos", "error");
-          return;
-        }
-
-        btnEnviar.disabled = true;
-        btnEnviar.innerHTML = "🔍 Verificando...";
-
-        const formData = new FormData();
-        formData.append("accion", "guardar");
-        formData.append("nombre", nombre);
-        formData.append("telefono", telefono);
-        formData.append("timestamp", new Date().toLocaleString("es-ES"));
+        btn.disabled = true;
+        msg.style.display = "none";
 
         try {
-          await fetch(WEB_APP_URL, {
+          // Obtener IP pública del usuario
+          const ipRes = await fetch("https://api.ipify.org?format=json");
+          const ipData = await ipRes.json();
+          const userIp = ipData.ip;
+
+          const formData = new URLSearchParams();
+          formData.append("nombre", document.getElementById("nombre").value);
+          formData.append(
+            "telefono",
+            document.getElementById("telefono").value,
+          );
+          formData.append("ip", userIp);
+
+          // Enviar datos
+          const response = await fetch(API_URL, {
             method: "POST",
-            mode: "no-cors",
             body: formData,
           });
 
-          mostrarMensaje("✅ ¡Cliente guardado correctamente!");
-          form.reset();
-          // Quitar clase de contenido oscuro al resetear
-          document
-            .querySelectorAll("input")
-            .forEach((i) => i.classList.remove("has-content"));
+          const resultado = await response.text();
+
+          if (resultado === "DUPLICADO") {
+            showMsg("❌ Este número ya está registrado.", "error");
+          } else if (resultado === "SPAM") {
+            showMsg("⚠️ Demasiados intentos. Intenta en una hora.", "error");
+          } else {
+            showMsg("✅ ¡Contacto guardado con éxito!", "success");
+            form.reset();
+            document
+              .querySelectorAll("input")
+              .forEach((i) => i.classList.remove("has-content"));
+          }
         } catch (error) {
-          mostrarMensaje("❌ Error de conexión.", "error");
+          showMsg("❌ Error de conexión. Intenta de nuevo.", "error");
         } finally {
-          btnEnviar.disabled = false;
-          btnEnviar.innerHTML = "📤 Guardar Contacto";
+          btn.disabled = false;
         }
       });
 
-      // Lógica para cambiar color de fondo y texto al escribir
-      const inputs = document.querySelectorAll("input");
-      inputs.forEach((input) => {
-        input.addEventListener("input", function () {
-          if (this.value.trim() !== "") {
-            this.classList.add("has-content");
-          } else {
-            this.classList.remove("has-content");
-          }
-        });
-      });
+      function showMsg(txt, tipo) {
+        msg.textContent = txt;
+        msg.className = tipo;
+        msg.style.display = "block";
+      }
     </script>
   </body>
 </html>
